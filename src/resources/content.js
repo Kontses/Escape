@@ -1,25 +1,25 @@
 import { Logo } from "@once-ui-system/core";
 
 const person = {
-  firstName: "Selene",
-  lastName: "Yu",
+  firstName: "AzTeK",
+  lastName: "",
   get name() {
     return `${this.firstName} ${this.lastName}`;
   },
-  role: "Design Engineer",
-  avatar: "/images/avatar.jpg",
+  role: "Studio / Soundsystem",
+  avatar: "/images/avatar.png",
   email: "example@gmail.com",
-  location: "Asia/Jakarta", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  languages: ["English", "Bahasa"], // optional: Leave the array empty if you don't want to display languages
+  location: "Europe/Athens", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
+  displayLocation: "Thessaloniki", // Display location for UI
+  languages: [], // optional: Leave the array empty if you don't want to display languages
 };
 
 const newsletter = {
   display: true,
-  title: <>Subscribe to {person.firstName}'s Newsletter</>,
+  title: <>Εγγραφτείτε στο Newsletter των {person.firstName}</>,
   description: (
     <>
-      I occasionally write about design, technology, and share thoughts on the intersection of
-      creativity and engineering.
+      Εγγραφείτε στο Newsletter για να μείνετε ενημερωμένοι για τις επόμενες κυκλοφορίες μας και δημόσιες εκδηλώσεις.
     </>
   ),
 };
@@ -27,11 +27,11 @@ const newsletter = {
 const social = [
   // Links are automatically displayed.
   // Import new icons in /once-ui/icons.ts
-  {
+  { /*
     name: "GitHub",
     icon: "github",
     link: "https://github.com/once-ui-system/nextjs-starter",
-  },
+  }, 
   {
     name: "LinkedIn",
     icon: "linkedin",
@@ -41,8 +41,8 @@ const social = [
     name: "Threads",
     icon: "threads",
     link: "https://www.threads.com/@once_ui",
-  },
-  {
+  }, 
+  { */
     name: "Email",
     icon: "email",
     link: `mailto:${person.email}`,
@@ -55,16 +55,16 @@ const home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Building bridges between design and code</>,
+  headline: <>Aztek</>,
   featured: {
     display: true,
-    title: <>Recent project: <strong className="ml-4">Once UI</strong></>,
+    title: <>Αυτοπαρουσιαστικό: <strong className="ml-4">Once UI</strong></>,
     href: "/work/building-once-ui-a-customizable-design-system",
   },
   subline: (
     <>
-      I'm Selene, a design engineer at <Logo icon="/trademarks/wordmark-dark.svg" style={{ display: "inline-flex", top: "0.25em", marginLeft: "-0.25em" }}/>, where I craft intuitive
-      <br /> user experiences. After hours, I build my own projects.
+      Οι Aztek είναι μια μουσική κολεκτίβα που δημιουργήθηκε για να κινητοποιήσει συνειδήσεις και να κουνίσει κώλους.   
+      <br /> <br />Δραστηριοποιούμαστε κυρίως σε ένα studio στο κέντρο της πόλης και τις όμορφες μέρες γιορτάζουμε με τους φίλους μας στήνοντας το ηχοσύστημα μας σε όποιο μέρος έχει μείνει ανέγγιχτο από το βίαιο σύστημα της οικονομίας.
     </>
   ),
 };
@@ -73,7 +73,7 @@ const about = {
   path: "/about",
   label: "About",
   title: `About – ${person.name}`,
-  description: `Meet ${person.name}, ${person.role} from ${person.location}`,
+  description: `Meet ${person.name}, ${person.role} from ${person.displayLocation}`,
   tableOfContent: {
     display: true,
     subItems: false,
