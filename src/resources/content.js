@@ -10,7 +10,7 @@ const person = {
   avatar: "/images/avatar.png",
   email: "example@gmail.com",
   location: "Europe/Athens", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  displayLocation: "Thessaloniki", // Display location for UI
+  // displayLocation: "Thessaloniki", // Display location for UI
   languages: [], // optional: Leave the array empty if you don't want to display languages
 };
 
