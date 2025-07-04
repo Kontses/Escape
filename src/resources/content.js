@@ -10,7 +10,7 @@ const person = {
   avatar: "/images/avatar.png",
   email: "example@gmail.com",
   location: "Europe/Athens", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  // displayLocation: "Thessaloniki", // Display location for UI
+  // displayLocation: "Thessaloniki", // Display location for UI  
   languages: [], // optional: Leave the array empty if you don't want to display languages
 };
 
@@ -19,7 +19,7 @@ const newsletter = {
   title: <>Εγγραφτείτε στο Newsletter των {person.firstName}</>,
   description: (
     <>
-      Εγγραφείτε στο Newsletter για να μείνετε ενημερωμένοι για τις επόμενες κυκλοφορίες μας και δημόσιες εκδηλώσεις.
+      Εγγραφείτε στο Newsletter για να μείνετε ενημερωμένοι για τις επόμενες κυκλοφορίες μας και τις δημόσιες εκδηλώσεις.
     </>
   ),
 };
@@ -55,7 +55,7 @@ const home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Aztek</>,
+  headline: <>AzTeK</>,
   featured: {
     display: true,
     title: <>Αυτοπαρουσιαστικό: <strong className="ml-4">Once UI</strong></>,
@@ -76,23 +76,22 @@ const about = {
   description: `Meet ${person.name}, ${person.role} from ${person.displayLocation}`,
   tableOfContent: {
     display: true,
-    subItems: false,
+    subItems: true,
   },
   avatar: {
     display: true,
   },
   calendar: {
-    display: true,
+    display: false,
     link: "https://cal.com",
   },
   intro: {
     display: true,
-    title: "Introduction",
+    title: "Εισαγωγή",
     description: (
       <>
-        Selene is a Jakarta-based design engineer with a passion for transforming complex challenges
-        into simple, elegant design solutions. Her work spans digital interfaces, interactive
-        experiences, and the convergence of design and technology.
+        Η μουσική κολλεκτίβα AzTeK είναι ένα αυτοοργανωμένο στούντιο που στεγάζεται σε μία
+        τσιμεντένια τρύπα στο κέντρο της πόλης, αλλά για εμάς είναι και κάτι περισσότερο από αυτό...
       </>
     ),
   },
