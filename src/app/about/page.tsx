@@ -34,21 +34,11 @@ export default function About() {
       display: about.intro.display,
       items: [],
     },
-    {
-      title: about.work.title,
-      display: about.work.display,
-      items: about.work.experiences.map((experience) => experience.company),
-    },
-    {
-      title: about.studies.title,
-      display: about.studies.display,
-      items: about.studies.institutions.map((institution) => institution.name),
-    },
-    {
-      title: about.technical.title,
-      display: about.technical.display,
-      items: about.technical.skills.map((skill) => skill.title),
-    },
+    ...about.customSections.map((section) => ({
+      title: section.title,
+      display: true,
+      items: [],
+    })),
   ];
   return (
     <Column maxWidth="m">
@@ -90,10 +80,12 @@ export default function About() {
             horizontal="center"
           >
             <Avatar src={person.avatar} size="xl" />
-            <Flex gap="8" vertical="center">
-              <Icon onBackground="accent-weak" name="globe" />
-              {person.location}
-            </Flex>
+            {person.displayLocation && (
+              <Flex gap="8" vertical="center">
+                <Icon onBackground="accent-weak" name="globe" />
+                {person.location}
+              </Flex>
+            )}
             {person.languages.length > 0 && (
               <Flex wrap gap="8">
                 {person.languages.map((language, index) => (
@@ -179,11 +171,22 @@ export default function About() {
           </Column>
 
           {about.intro.display && (
-            <Column textVariant="body-default-l" fillWidth gap="m" marginBottom="xl">
+            <Column textVariant="body-default-l" fillWidth gap="m" marginBottom="m">
               {about.intro.description}
             </Column>
           )}
 
+          {/* Custom Sections */}
+          {about.customSections && about.customSections.map((section) => (
+            <Column key={section.title} fillWidth gap="m" marginBottom="m" id={section.title}>
+              <Column textVariant="body-default-l" fillWidth gap="m">
+                {section.description}
+              </Column>
+            </Column>
+          ))}
+
+          {/* Original Work Experience (now disabled) */}
+          {/*
           {about.work.display && (
             <>
               <Heading as="h2" id={about.work.title} variant="display-strong-s" marginBottom="m">
@@ -245,7 +248,10 @@ export default function About() {
               </Column>
             </>
           )}
+          */}
 
+          {/* Original Studies (now disabled) */}
+          {/*
           {about.studies.display && (
             <>
               <Heading as="h2" id={about.studies.title} variant="display-strong-s" marginBottom="m">
@@ -265,26 +271,26 @@ export default function About() {
               </Column>
             </>
           )}
+          */}
 
+          {/* Original Technical Skills (now disabled) */}
+          {/*
           {about.technical.display && (
             <>
-              <Heading
-                as="h2"
-                id={about.technical.title}
-                variant="display-strong-s"
-                marginBottom="40"
-              >
+              <Heading as="h2" id={about.technical.title} variant="display-strong-s" marginBottom="m">
                 {about.technical.title}
               </Heading>
-              <Column fillWidth gap="l">
+              <Column fillWidth gap="l" marginBottom="40">
                 {about.technical.skills.map((skill, index) => (
-                  <Column key={`${skill}-${index}`} fillWidth gap="4">
-                    <Text variant="heading-strong-l">{skill.title}</Text>
-                    <Text variant="body-default-m" onBackground="neutral-weak">
+                  <Column key={`${skill.title}-${index}`} fillWidth gap="4">
+                    <Text id={skill.title} variant="heading-strong-l">
+                      {skill.title}
+                    </Text>
+                    <Text variant="heading-default-xs" onBackground="neutral-weak">
                       {skill.description}
                     </Text>
-                    {skill.images && skill.images.length > 0 && (
-                      <Flex fillWidth paddingTop="m" gap="12" wrap>
+                    {skill.images.length > 0 && (
+                      <Flex fillWidth paddingTop="m" paddingLeft="40" gap="12" wrap>
                         {skill.images.map((image, index) => (
                           <Flex
                             key={index}
@@ -314,6 +320,7 @@ export default function About() {
               </Column>
             </>
           )}
+          */}
         </Column>
       </Flex>
     </Column>
