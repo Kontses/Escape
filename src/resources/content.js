@@ -59,7 +59,7 @@ const home = {
   featured: {
     display: false,
     title: <>Αυτοπαρουσιαστικό</>,
-    //href: "/work/building-once-ui-a-customizable-design-system",
+    href: "/work/building-once-ui-a-customizable-design-system",
   },
   subline: (
     <>

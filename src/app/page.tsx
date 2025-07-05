@@ -27,7 +27,7 @@ export default function Home() {
           {home.featured.display && (
           <RevealFx fillWidth horizontal="start" paddingTop="16" paddingBottom="32" paddingLeft="12">
             <Badge background="brand-alpha-weak" paddingX="12" paddingY="4" onBackground="neutral-strong" textVariant="label-default-s" arrow={false}
-              href={home.featured.href}>
+              {...(home.featured.href ? { href: home.featured.href } : {})}>
               <Row paddingY="2">{home.featured.title}</Row>
             </Badge>
           </RevealFx>
