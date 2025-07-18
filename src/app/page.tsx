@@ -68,7 +68,7 @@ export default function Home() {
         </Column>
       </Column>
       <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} postDirectory={["/work/discography"]} baseHref="/work/discography" />
+        <Projects range={[1, 1]} postDirectory={["src", "app", "work", "discography"]} baseHref="/work/discography" />
       </RevealFx>
       {routes["/blog"] && (
         <Flex fillWidth gap="24" mobileDirection="column">
@@ -82,7 +82,7 @@ export default function Home() {
           </Flex>
         </Flex>
       )}
-      <Projects range={[2]} postDirectory={["/work/discography"]} baseHref="/work/discography" />
+      <Projects range={[2]} postDirectory={["src", "app", "work", "discography"]} baseHref="/work/discography" />
       {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Column>
   );
