@@ -1,4 +1,5 @@
 import { home } from "./content";
+// import { liveSets } from "./content"; // Αφαίρεσα το liveSets
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
 const baseURL = "https://demo.magic-portfolio.com";
@@ -9,6 +10,9 @@ const routes = {
   "/work": true,
   "/blog": true,
   "/gallery": true,
+  "/work/music-videos": true,
+  "/work/discography": true,
+  "/work/dj-sets": true,
 };
 
 const display = {
@@ -61,8 +65,8 @@ const fonts = {
 // default customization applied to the HTML in the main layout.tsx
 const style = {
   theme: "system", // dark | light | system
-  neutral: "sand", // sand | gray | slate | custom
-  brand: "yellow", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
+  neutral: "slate", // sand | gray | slate | custom
+  brand: "cyan", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
   accent: "red", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
   solid: "contrast", // color | contrast
   solidStyle: "flat", // flat | plastic

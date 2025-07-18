@@ -1,0 +1,22 @@
+.carouselContainer {
+  display: flex;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch; /* Για πιο ομαλή κύλιση σε iOS */
+  scroll-snap-type: x mandatory; /* Προαιρετικό: για snapping στα στοιχεία */
+  gap: var(--spacing-xl); /* Χρήση Once UI spacing token */
+  padding-bottom: var(--spacing-m); /* Προσθήκη padding για τη γραμμή κύλισης */
+  padding-left: var(--spacing-l); /* Προσθήκη padding στην αρχή */
+  padding-right: var(--spacing-l); /* Προσθήκη padding στο τέλος */
+
+  /* Απόκρυψη της γραμμής κύλισης για πιο καθαρή εμφάνιση */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.carouselItem {
+  flex-shrink: 0; /* Αποτροπή συρρίκνωσης των στοιχείων */
+  scroll-snap-align: start; /* Snapping στην αρχή κάθε στοιχείου */
+  width: 300px; /* Ενδεικτικό πλάτος, προσαρμόστε ανάλογα */
+  max-width: 80vw; /* Προσαρμογή για ανταπόκριση */
+} 

@@ -1,6 +1,6 @@
 import { Column, Meta, Schema } from "@once-ui-system/core";
-import { baseURL, about, person, work } from "@/resources";
-import { Projects } from "@/components/work/Projects";
+import { baseURL, about, person, work, musicVideos, discography, djSets } from "@/resources";
+import { WorkCarouselSection } from "@/components/work/WorkCarouselSection";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -28,7 +28,25 @@ export default function Work() {
           image: `${baseURL}${person.avatar}`,
         }}
       />
-      <Projects />
+
+      <WorkCarouselSection
+        title={discography.label}
+        postDirectory={["src", "app", "work", "discography"]}
+        baseHref="/work/discography"
+        projectCardAspectRatio="1 / 1"
+      />
+
+      <WorkCarouselSection
+        title={musicVideos.label}
+        postDirectory={["src", "app", "work", "music-videos"]}
+        baseHref="/work/music-videos"
+      />
+
+      <WorkCarouselSection
+        title={djSets.label}
+        postDirectory={["src", "app", "work", "dj-sets"]}
+        baseHref="/work/dj-sets"
+      />
     </Column>
   );
 }

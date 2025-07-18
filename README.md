@@ -1,6 +1,6 @@
 # **Magic Portfolio by Once UI**
 
-Demo template για το AzTeK SoundSystem
+Demo template για το Escape SoundSystem
 
 # **Getting started**
 

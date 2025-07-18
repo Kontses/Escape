@@ -19,6 +19,7 @@ interface ProjectCardProps {
   description: string;
   avatars: { src: string }[];
   link: string;
+  aspectRatio?: string; // Προσθέτω το νέο prop
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -29,11 +30,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   description,
   avatars,
   link,
+  aspectRatio = "16 / 9", // Ορίζω default τιμή
 }) => {
   return (
     <Column fillWidth gap="m">
       <Carousel
         sizes="(max-width: 960px) 100vw, 960px"
+        aspectRatio={aspectRatio} // Περνάω το aspectRatio στο Carousel
         items={images.map((image) => ({
           slide: image,
           alt: title,

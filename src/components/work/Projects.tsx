@@ -1,13 +1,17 @@
 import { getPosts } from "@/utils/utils";
 import { Column } from "@once-ui-system/core";
 import { ProjectCard } from "@/components";
+// import { MusicEntry } from "@/components/work/MusicEntry";
+// import { serialize } from 'next-mdx-remote/serialize';
 
 interface ProjectsProps {
   range?: [number, number?];
+  postDirectory: string[];
+  baseHref: string;
 }
 
-export function Projects({ range }: ProjectsProps) {
-  let allProjects = getPosts(["src", "app", "work", "projects"]);
+export function Projects({ range, postDirectory, baseHref }: ProjectsProps) {
+  let allProjects = getPosts(postDirectory);
 
   const sortedProjects = allProjects.sort((a, b) => {
     return new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
@@ -23,7 +27,7 @@ export function Projects({ range }: ProjectsProps) {
         <ProjectCard
           priority={index < 2}
           key={post.slug}
-          href={`work/${post.slug}`}
+          href={`${baseHref}/${post.slug}`}
           images={post.metadata.images}
           title={post.metadata.title}
           description={post.metadata.summary}

@@ -16,8 +16,10 @@ type Metadata = {
   image?: string;
   images: string[];
   tag?: string;
-  team: Team[];
+  team?: Team[];
   link?: string;
+  youtubeId?: string; // Add youtubeId
+  albumUrl?: string;  // Add albumUrl
 };
 
 import { notFound } from 'next/navigation';
@@ -47,6 +49,8 @@ function readMDXFile(filePath: string) {
     tag: data.tag || [],
     team: data.team || [],
     link: data.link || "",
+    youtubeId: data.youtubeId || undefined, // Read youtubeId
+    albumUrl: data.albumUrl || undefined,  // Read albumUrl
   };
 
   return { metadata, content };
