@@ -1,5 +1,3 @@
-import { Logo } from "@once-ui-system/core";
-
 export const person = {
   firstName: "Escape",
   lastName: "",
@@ -8,7 +6,7 @@ export const person = {
   },
   role: "Studio / Soundsystem",
   avatar: "/images/avatar.jpg",
-  email: "example@gmail.com",
+  email: "escape23collective@gmail.com",
   location: "", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
   displayLocation: false, // Display location for UI
   languages: [], // optional: Leave the array empty if you don't want to display languages
@@ -37,12 +35,12 @@ export const social = [
     icon: "linkedin",
     link: "https://www.linkedin.com/company/once-ui/",
   },
-  {
-    name: "Threads",
-    icon: "threads",
-    link: "https://www.threads.com/@once_ui",
+  {*/
+    name: "Instagram",
+    icon: "instagram",
+    link: "https://www.instagram.com/escape23collective",
   }, 
-  { */
+  {
     name: "Email",
     icon: "email",
     link: `mailto:${person.email}`,
@@ -215,9 +213,7 @@ export const about = {
     {
       title: "Κατακλείδα",
       description: (
-        <>
-          <p><em>"Δεν έχουμε τίποτα δικό μας, παρά μόνο τον χρόνο, τον οποίο μπορούν να απολαύσουν και όσοι δεν έχουν που την κεφαλήν κλίνει."</em> - Μπαλτάσαρ Γκρασιάν</p>
-        </>
+        <p><em>"Δεν έχουμε τίποτα δικό μας, παρά μόνο τον χρόνο, τον οποίο μπορούν να απολαύσουν και όσοι δεν έχουν που την κεφαλήν κλίνει."</em> - Μπαλτάσαρ Γκρασιάν</p>
       ),
     },
   ],
