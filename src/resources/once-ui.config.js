@@ -130,7 +130,7 @@ const effects = {
     angle: 45,
   },
 };
-
+//το mailchimp πρεπει να φαει ban
 const mailchimp = {
   action: "https://url/subscribe/post?parameters",
   effects: {

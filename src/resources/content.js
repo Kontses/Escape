@@ -267,44 +267,14 @@ export const gallery = {
   // These are placeholder images, replace with your own
   images: [
     {
-      src: "/images/gallery/horizontal-1.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/horizontal-2.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/horizontal-3.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/horizontal-4.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/vertical-1.jpg",
-      alt: "image",
+      src: "/images/gallery/studio-pre-opening.jpg",
+      alt: "Escape Studio pre-opening",
       orientation: "vertical",
     },
     {
-      src: "/images/gallery/vertical-2.jpg",
-      alt: "image",
+      src: "/images/gallery/Olumpos-Hysteria-2.jpg",
+      alt: "Olumpos Hysteria vol. 2",
       orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/vertical-3.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/vertical-4.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
+    }
   ],
 };
