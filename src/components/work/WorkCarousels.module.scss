@@ -3,7 +3,7 @@
   overflow-x: scroll;
   -webkit-overflow-scrolling: touch; /* Για πιο ομαλή κύλιση σε iOS */
   scroll-snap-type: x mandatory; /* Προαιρετικό: για snapping στα στοιχεία */
-  gap: var(--spacing-xl); /* Χρήση Once UI spacing token */
+  gap: 32px; /* Χρήση Once UI spacing token */
   padding-bottom: var(--spacing-m); /* Προσθήκη padding για τη γραμμή κύλισης */
   padding-left: var(--spacing-l); /* Προσθήκη padding στην αρχή */
   padding-right: var(--spacing-l); /* Προσθήκη padding στο τέλος */

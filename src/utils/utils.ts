@@ -9,6 +9,12 @@ type Team = {
   linkedIn: string;
 };
 
+type Track = {
+  title: string;
+  duration?: string;
+  src?: string; // Add audio file source
+};
+
 type Metadata = {
   title: string;
   publishedAt: string;
@@ -20,6 +26,7 @@ type Metadata = {
   link?: string;
   youtubeId?: string; // Add youtubeId
   albumUrl?: string;  // Add albumUrl
+  tracks?: Track[];   // Add tracks
 };
 
 import { notFound } from 'next/navigation';
@@ -51,6 +58,7 @@ function readMDXFile(filePath: string) {
     link: data.link || "",
     youtubeId: data.youtubeId || undefined, // Read youtubeId
     albumUrl: data.albumUrl || undefined,  // Read albumUrl
+    tracks: data.tracks || undefined,   // Read tracks
   };
 
   return { metadata, content };
@@ -73,4 +81,16 @@ function getMDXData(dir: string) {
 export function getPosts(customPath = ["", "", "", ""]) {
   const postsDir = path.join(process.cwd(), ...customPath);
   return getMDXData(postsDir);
+}
+
+export function getPostBySlug(slug: string, customPath = ["", "", "", ""]) {
+  const postsDir = path.join(process.cwd(), ...customPath);
+  const fullPath = path.join(postsDir, `${slug}.mdx`);
+  try {
+    const { metadata, content } = readMDXFile(fullPath);
+    return { metadata, slug, content };
+  } catch (error) {
+    console.error(`Error reading post with slug ${slug}:`, error);
+    return null;
+  }
 }

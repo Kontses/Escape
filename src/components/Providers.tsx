@@ -3,8 +3,9 @@
 import { BorderStyle, ChartMode, ChartVariant, DataThemeProvider, IconProvider, NeutralColor, ScalingSize, Schemes, SolidStyle, SolidType, SurfaceStyle, ThemeProvider, ToastProvider, TransitionStyle } from "@once-ui-system/core";
 import { style, dataStyle } from "../resources";
 import { iconLibrary } from "../resources/icons";
+import { MusicPlayerProvider } from "@/components/MusicPlayerContext";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ThemeProvider
       brand={style.brand as Schemes}
@@ -32,7 +33,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
         <ToastProvider>
           <IconProvider icons={iconLibrary}>
-            {children}
+            <MusicPlayerProvider>{children}</MusicPlayerProvider>
           </IconProvider>
         </ToastProvider>
       </DataThemeProvider>
