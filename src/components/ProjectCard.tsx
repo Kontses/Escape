@@ -38,6 +38,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         sizes="(max-width: 960px) 100vw, 960px"
         aspectRatio={aspectRatio} // Περνάω το aspectRatio στο Carousel
         items={images.map((image) => ({
+          key: image,
           slide: image,
           alt: title,
         }))}

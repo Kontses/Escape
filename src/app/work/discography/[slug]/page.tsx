@@ -16,8 +16,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: Readonly<DiscographyAlbumPageProps>) {
-  const post = getPostBySlug(params.slug, ["src", "app", "work", "discography"]);
+export async function generateMetadata({ params: { slug } }: Readonly<DiscographyAlbumPageProps>) {
+  const post = getPostBySlug(slug, ["src", "app", "work", "discography"]);
 
   if (!post) {
     return {};
@@ -32,14 +32,14 @@ export async function generateMetadata({ params }: Readonly<DiscographyAlbumPage
   });
 }
 
-export default async function DiscographyAlbumPage({ params }: Readonly<DiscographyAlbumPageProps>) {
-  const post = getPostBySlug(params.slug, ["src", "app", "work", "discography"]);
+export default async function DiscographyAlbumPage({ params: { slug } }: Readonly<DiscographyAlbumPageProps>) {
+  const post = getPostBySlug(slug, ["src", "app", "work", "discography"]);
 
   if (!post) {
     notFound();
   }
 
-  const { title, summary, images, tracks } = post.metadata;
+  const { title, artist, summary, images, tracks, publishedAt } = post.metadata;
 
   return (
     <Column maxWidth="m">
@@ -61,9 +61,11 @@ export default async function DiscographyAlbumPage({ params }: Readonly<Discogra
       </Link>
       <DiscographyAlbumClientContent
         title={title}
+        artist={artist}
         summary={summary}
         images={images}
         tracks={tracks}
+        publishedAt={publishedAt}
       />
     </Column>
   );

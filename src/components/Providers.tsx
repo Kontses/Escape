@@ -33,7 +33,7 @@ export function Providers({ children }: Readonly<{ children: React.ReactNode }>)
         >
         <ToastProvider>
           <IconProvider icons={iconLibrary}>
-            <MusicPlayerProvider>{children}</MusicPlayerProvider>
+            {children}
           </IconProvider>
         </ToastProvider>
       </DataThemeProvider>

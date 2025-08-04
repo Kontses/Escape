@@ -1,10 +1,12 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Column, Flex, Heading, Text, Button } from '@once-ui-system/core';
 import Image from 'next/image';
 import { useMusicPlayer } from '@/components/MusicPlayerContext';
 import styles from './DiscographyAlbumClientContent.module.scss';
+import GalleryModal from '@/components/gallery/GalleryModal';
+import { formatDate } from '@/utils/formatDate';
 
 interface Track {
   title: string;
@@ -14,13 +16,24 @@ interface Track {
 
 interface DiscographyAlbumClientContentProps {
   title: string;
+  artist?: string;
   summary?: string;
   images?: string[];
   tracks?: Track[];
+  publishedAt?: string;
 }
 
-export function DiscographyAlbumClientContent({ title, summary, images, tracks }: Readonly<DiscographyAlbumClientContentProps>) {
+export function DiscographyAlbumClientContent({
+  title,
+  artist,
+  summary,
+  images,
+  tracks,
+  publishedAt,
+}: Readonly<DiscographyAlbumClientContentProps>) {
   const { playTrack } = useMusicPlayer();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log('Artist:', artist);
 
   const handlePlayAlbum = () => {
     if (tracks && tracks.length > 0) {
@@ -28,17 +41,53 @@ export function DiscographyAlbumClientContent({ title, summary, images, tracks }
     }
   };
 
+  const handleDownload = async () => {
+    const response = await fetch('/api/download-album', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tracks, images, title }),
+    });
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } else {
+      alert('Failed to download album');
+    }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Column gap="l">
       <Flex horizontal="space-between" gap="l" vertical="start">
         <Column flex="1" gap="l">
-          <Heading as="h1" variant="heading-strong-xl">{title}</Heading>
+          <Flex vertical="center" horizontal="space-between">
+            <Heading as="h1" variant="heading-strong-xl">{title}</Heading>
+            {publishedAt && <Text variant="body-s">{formatDate(publishedAt)}</Text>}
+          </Flex>
+          {artist && <Text variant="body-strong">{artist}</Text>}
           {summary && <Text>{summary}</Text>}
 
           {tracks && tracks.length > 0 && (
-            <Button onClick={handlePlayAlbum} style={{ marginTop: '20px', marginBottom: '20px' }}>
-              Play Album
-            </Button>
+            <Flex gap="s" style={{ marginTop: '20px', marginBottom: '20px' }}>
+              <Button onClick={handlePlayAlbum}>Play Album</Button>
+              <Button onClick={handleDownload} variant="secondary">Download</Button>
+            </Flex>
           )}
 
           {tracks && tracks.length > 0 && (
@@ -48,6 +97,7 @@ export function DiscographyAlbumClientContent({ title, summary, images, tracks }
                 <Flex
                   key={`${track.title}-${index}`}
                   vertical="center"
+                  horizontal="space-between"
                   gap="s"
                   onClick={() => playTrack(track, tracks)}
                   className={styles.trackItem}
@@ -59,9 +109,11 @@ export function DiscographyAlbumClientContent({ title, summary, images, tracks }
                     transition: 'background-color 0.2s ease-in-out, border-color 0.2s ease-in-out',
                   }}
                 >
-                  <Text>{index + 1}.</Text>
-                  <Text>{track.title}</Text>
-                  {track.duration && <Text>{track.duration}</Text>}
+                  <Flex vertical="center" gap="s">
+                    <Text>{index + 1}.</Text>
+                    <Text>{track.title}</Text>
+                  </Flex>
+                  {track.duration && <Text style={{ marginLeft: 'auto' }}>{track.duration}</Text>}
                 </Flex>
               ))}
             </Column>
@@ -70,17 +122,27 @@ export function DiscographyAlbumClientContent({ title, summary, images, tracks }
 
         {images && images.length > 0 && (
           <Column>
-            <Image
-              src={images[0]}
-              alt={`Cover for ${title}`}
-              width={300}
-              height={300}
-              style={{ width: '300px', height: '300px', objectFit: 'cover', borderRadius: '8px' }}
-              priority
-            />
+            <div onClick={openModal} style={{ cursor: 'pointer' }}>
+              <Image
+                src={images[0]}
+                alt={`Cover for ${title}`}
+                width={300}
+                height={300}
+                style={{ width: '300px', height: '300px', objectFit: 'cover', borderRadius: '8px' }}
+                priority
+              />
+            </div>
           </Column>
         )}
       </Flex>
+      {images && images.length > 0 && (
+        <GalleryModal
+          isOpen={isModalOpen}
+          imageSrc={images[0]}
+          imageAlt={`Cover for ${title}`}
+          onClose={closeModal}
+        />
+      )}
     </Column>
   );
 }
