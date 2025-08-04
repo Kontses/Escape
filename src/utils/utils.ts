@@ -27,6 +27,7 @@ type Metadata = {
   youtubeId?: string; // Add youtubeId
   albumUrl?: string;  // Add albumUrl
   tracks?: Track[];   // Add tracks
+  artist?: string;    // Add artist for discography albums
 };
 
 import { notFound } from 'next/navigation';
@@ -59,6 +60,7 @@ function readMDXFile(filePath: string) {
     youtubeId: data.youtubeId || undefined, // Read youtubeId
     albumUrl: data.albumUrl || undefined,  // Read albumUrl
     tracks: data.tracks || undefined,   // Read tracks
+    artist: data.artist || undefined,   // Read artist for discography albums
   };
 
   return { metadata, content };

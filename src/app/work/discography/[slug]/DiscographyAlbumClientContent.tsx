@@ -78,9 +78,9 @@ export function DiscographyAlbumClientContent({
         <Column flex="1" gap="l">
           <Flex vertical="center" horizontal="space-between">
             <Heading as="h1" variant="heading-strong-xl">{title}</Heading>
-            {publishedAt && <Text variant="body-s">{formatDate(publishedAt)}</Text>}
+            {publishedAt && <Text variant="body-default-s">{formatDate(publishedAt)}</Text>}
           </Flex>
-          {artist && <Text variant="body-strong">{artist}</Text>}
+          {artist && <Text variant="body-default-s">{artist}</Text>}
           {summary && <Text>{summary}</Text>}
 
           {tracks && tracks.length > 0 && (
