@@ -37,7 +37,8 @@ export function DiscographyAlbumClientContent({
 
   const handlePlayAlbum = () => {
     if (tracks && tracks.length > 0) {
-      playTrack(tracks[0], tracks);
+      const albumArt = images && images.length > 0 ? images[0] : undefined;
+      playTrack(tracks[0], tracks, albumArt);
     }
   };
 
@@ -80,7 +81,7 @@ export function DiscographyAlbumClientContent({
             <Heading as="h1" variant="heading-strong-xl">{title}</Heading>
             {publishedAt && <Text variant="body-default-s">{formatDate(publishedAt)}</Text>}
           </Flex>
-          {artist && <Text variant="body-default-s">{artist}</Text>}
+          {artist && <Text variant="heading-default-s" style={{ fontSize: '1.2em', fontWeight: '600' }}>{artist}</Text>}
           {summary && <Text>{summary}</Text>}
 
           {tracks && tracks.length > 0 && (
@@ -99,7 +100,10 @@ export function DiscographyAlbumClientContent({
                   vertical="center"
                   horizontal="space-between"
                   gap="s"
-                  onClick={() => playTrack(track, tracks)}
+                  onClick={() => {
+                    const albumArt = images && images.length > 0 ? images[0] : undefined;
+                    playTrack(track, tracks, albumArt);
+                  }}
                   className={styles.trackItem}
                   style={{
                     cursor: 'pointer',

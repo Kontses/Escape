@@ -9,6 +9,7 @@ interface Track {
   title: string;
   duration?: string;
   src?: string;
+  albumArt?: string;
 }
 
 interface AudioPlayerProps {
@@ -16,13 +17,12 @@ interface AudioPlayerProps {
 }
 
 export function AudioPlayer() {
-  const { currentTrack, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume } = useMusicPlayer();
+  const { currentTrack, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume, seekTo, isMuted, toggleMute } = useMusicPlayer();
   const audioRef = useRef<HTMLAudioElement>(null);
   
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = parseFloat(e.target.value);
-    }
+    const newTime = parseFloat(e.target.value);
+    seekTo(newTime);
   };
 
   const formatTime = (time: number) => {
@@ -46,13 +46,17 @@ export function AudioPlayer() {
   return (
     <Flex horizontal="space-between" vertical="center" gap="l" fillWidth>
       <Flex horizontal="start" vertical="center" gap="s" style={{ minWidth: '200px' }}>
-        {currentTrack.src && (
+        {currentTrack.albumArt && (
           <Image
-            src={currentTrack.src.replace(".wav", ".jpg")}
-            alt={currentTrack.title || "Track Cover"}
+            src={currentTrack.albumArt}
+            alt={currentTrack.title || "Album Cover"}
             width={40}
             height={40}
-            style={{ borderRadius: '4px' }}
+            style={{ borderRadius: '4px', objectFit: 'cover' }}
+            onError={(e) => {
+              // Hide image if it fails to load
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
           />
         )}
         <Column>
@@ -82,11 +86,11 @@ export function AudioPlayer() {
             onChange={handleSeek}
             style={{
               flex: 1,
-              height: '5px',
-              background: '#555',
+              height: '6px',
+              background: `linear-gradient(to right, #007acc 0%, #007acc ${(currentTime / duration) * 100}%, #555 ${(currentTime / duration) * 100}%, #555 100%)`,
               borderRadius: '5px',
               outline: 'none',
-              opacity: '0.7',
+              opacity: '0.8',
               transition: 'opacity .2s',
               WebkitAppearance: 'none',
               appearance: 'none',
@@ -97,8 +101,21 @@ export function AudioPlayer() {
         </Flex>
       </Flex>
 
-      <Flex horizontal="end" vertical="center" gap="s" style={{ minWidth: '100px' }}>
-        <Text style={{ color: '#ccc', fontSize: '0.8em' }}>Volume</Text>
+      <Flex horizontal="end" vertical="center" gap="s" style={{ minWidth: '120px' }}>
+        <Button 
+          onClick={toggleMute} 
+          size="s" 
+          style={{ 
+            background: 'transparent', 
+            border: 'none', 
+            padding: '0', 
+            minWidth: 'auto', 
+            color: '#fff',
+            opacity: isMuted ? '0.5' : '1'
+          }}
+        >
+          <Icon name={isMuted ? "volumeOff" : volume > 0.5 ? "volumeHigh" : volume > 0 ? "volumeLow" : "volumeOff"} size="s" />
+        </Button>
         <input
           type="range"
           value={volume * 100}
@@ -108,10 +125,10 @@ export function AudioPlayer() {
           style={{
             width: '80px',
             height: '5px',
-            background: '#555',
+            background: `linear-gradient(to right, #007acc 0%, #007acc ${volume * 100}%, #555 ${volume * 100}%, #555 100%)`,
             borderRadius: '5px',
             outline: 'none',
-            opacity: '0.7',
+            opacity: '0.8',
             transition: 'opacity .2s',
             WebkitAppearance: 'none',
             appearance: 'none',
