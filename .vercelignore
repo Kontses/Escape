@@ -1,0 +1,10 @@
+# Exclude large audio files from serverless functions
+# These will still be available as static assets
+public/Music/Discography/**/*.wav
+public/Music/Discography/**/*.mp3
+public/Music/Discography/**/*.flac
+
+# Keep images and other small files
+!public/Music/Discography/**/*.png
+!public/Music/Discography/**/*.jpg
+!public/Music/Discography/**/*.jpeg

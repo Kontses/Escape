@@ -4,41 +4,80 @@ import fs from 'fs';
 import path from 'path';
 
 export async function POST(req: NextRequest) {
-  const { tracks, images, title } = await req.json();
+  try {
+    const { tracks, images, title } = await req.json();
 
-  if (!tracks || !images || !title) {
-    return new NextResponse('Missing required parameters', { status: 400 });
-  }
-
-  const zip = new JSZip();
-
-  // Add images to zip
-  for (const imagePath of images) {
-    const fullPath = path.join(process.cwd(), 'public', imagePath);
-    if (fs.existsSync(fullPath)) {
-      const fileContent = fs.readFileSync(fullPath);
-      zip.file(path.basename(imagePath), fileContent);
+    if (!tracks || !images || !title) {
+      return new NextResponse('Missing required parameters', { status: 400 });
     }
-  }
 
-  // Add tracks to zip
-  for (const track of tracks) {
-    if (track.src) {
-      const fullPath = path.join(process.cwd(), 'public', track.src);
+    const zip = new JSZip();
+
+    // Add images to zip (these are typically small)
+    for (const imagePath of images) {
+      const fullPath = path.join(process.cwd(), 'public', imagePath);
       if (fs.existsSync(fullPath)) {
-        const fileContent = fs.readFileSync(fullPath);
-        zip.file(path.basename(track.src), fileContent);
+        try {
+          const fileContent = fs.readFileSync(fullPath);
+          zip.file(path.basename(imagePath), fileContent);
+        } catch (error) {
+          console.error(`Error reading image ${imagePath}:`, error);
+        }
       }
     }
+
+    // For tracks, we'll create a more efficient approach
+    // Only add track info to zip, not the actual audio files to avoid size limits
+    let trackList = '';
+    let hasAudioFiles = false;
+
+    for (const track of tracks) {
+      trackList += `${track.title}`;
+      if (track.duration) trackList += ` (${track.duration})`;
+      trackList += '\n';
+      
+      if (track.src) {
+        hasAudioFiles = true;
+        // Instead of including the large audio files, add a note about where to find them
+        const fullPath = path.join(process.cwd(), 'public', track.src);
+        if (fs.existsSync(fullPath)) {
+          trackList += `  Audio file: ${track.src}\n`;
+        }
+      }
+    }
+
+    // Add track listing as a text file
+    zip.file('tracklist.txt', trackList);
+
+    // Add a note about audio files if they exist
+    if (hasAudioFiles) {
+      const note = `Note: Audio files are available for streaming on the website.
+This download package contains album artwork and track information.
+For the full audio experience, please visit the album page on the website.
+
+Album: ${title}
+Tracks:
+${trackList}`;
+      zip.file('README.txt', note);
+    }
+
+    const zipContent = await zip.generateAsync({ 
+      type: 'nodebuffer',
+      compression: 'DEFLATE',
+      compressionOptions: { level: 6 }
+    });
+
+    return new NextResponse(zipContent, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/zip',
+        'Content-Disposition': `attachment; filename="${title}-info.zip"`,
+        'Content-Length': zipContent.length.toString()
+      },
+    });
+
+  } catch (error) {
+    console.error('Error creating download:', error);
+    return new NextResponse('Internal server error', { status: 500 });
   }
-
-  const zipContent = await zip.generateAsync({ type: 'nodebuffer' });
-
-  return new NextResponse(zipContent, {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/zip',
-      'Content-Disposition': `attachment; filename="${title}.zip"`,
-    },
-  });
 }

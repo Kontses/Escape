@@ -16,6 +16,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Exclude large music files from API route bundles
+  outputFileTracingExcludes: {
+    '/api/download-album': [
+      './public/Music/Discography/**/*.wav',
+      './public/Music/Discography/**/*.mp3',
+      './public/Music/Discography/**/*.flac',
+    ],
+  },
 };
 
 export default withMDX(nextConfig);
