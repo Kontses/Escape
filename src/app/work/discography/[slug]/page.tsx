@@ -16,7 +16,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params: { slug } }: Readonly<DiscographyAlbumPageProps>) {
+export async function generateMetadata({ params: { slug } }: DiscographyAlbumPageProps) {
   const post = getPostBySlug(slug, ["src", "app", "work", "discography"]);
 
   if (!post) {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params: { slug } }: Readonly<Discograph
   });
 }
 
-export default async function DiscographyAlbumPage({ params: { slug } }: Readonly<DiscographyAlbumPageProps>) {
+export default async function DiscographyAlbumPage({ params: { slug } }: DiscographyAlbumPageProps) {
   const post = getPostBySlug(slug, ["src", "app", "work", "discography"]);
 
   if (!post) {
