@@ -110,8 +110,9 @@ export function AudioPlayer() {
             border: 'none', 
             padding: '0', 
             minWidth: 'auto', 
-            color: '#fff',
-            opacity: isMuted ? '0.5' : '1'
+            color: '#ffffff',
+            filter: 'brightness(1.2)',
+            opacity: isMuted ? '0.6' : '1'
           }}
         >
           <Icon name={isMuted ? "volumeOff" : volume > 0.5 ? "volumeHigh" : volume > 0 ? "volumeLow" : "volumeOff"} size="s" />
@@ -125,7 +126,7 @@ export function AudioPlayer() {
           style={{
             width: '80px',
             height: '5px',
-            background: `linear-gradient(to right, #007acc 0%, #007acc ${volume * 100}%, #555 ${volume * 100}%, #555 100%)`,
+            background: `linear-gradient(to right, #ffffff 0%, #ffffff ${volume * 100}%, #555 ${volume * 100}%, #555 100%)`,
             borderRadius: '5px',
             outline: 'none',
             opacity: '0.8',
