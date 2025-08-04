@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "src/app/api/download-album/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/stream-audio/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}

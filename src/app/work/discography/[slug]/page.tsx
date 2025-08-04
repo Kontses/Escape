@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { DiscographyAlbumClientContent } from './DiscographyAlbumClientContent';
 
 interface DiscographyAlbumPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -16,7 +16,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params: { slug } }: DiscographyAlbumPageProps) {
+export async function generateMetadata({ params }: DiscographyAlbumPageProps) {
+  const { slug } = await params;
   const post = getPostBySlug(slug, ["src", "app", "work", "discography"]);
 
   if (!post) {
@@ -32,7 +33,8 @@ export async function generateMetadata({ params: { slug } }: DiscographyAlbumPag
   });
 }
 
-export default async function DiscographyAlbumPage({ params: { slug } }: DiscographyAlbumPageProps) {
+export default async function DiscographyAlbumPage({ params }: DiscographyAlbumPageProps) {
+  const { slug } = await params;
   const post = getPostBySlug(slug, ["src", "app", "work", "discography"]);
 
   if (!post) {
