@@ -1,11 +1,12 @@
 import { Column, Meta, Schema, Button } from "@once-ui-system/core";
 import { baseURL, about, person } from "@/resources";
-import { Projects } from "@/components/work/Projects";
+import { getPosts } from "@/utils/utils";
+import { MusicVideosGallery } from "@/components/work/MusicVideosGallery";
 
 export async function generateMetadata() {
   return Meta.generate({
     title: "Music Videos",
-    description: "Our official music videos.",
+    description: "Παρακολουθήστε τα τελευταία μουσικά μας βίντεο από το YouTube.",
     baseURL: baseURL,
     image: `/api/og/generate?title=${encodeURIComponent("Music Videos")}`,
     path: "/work/music-videos",
@@ -13,14 +14,17 @@ export async function generateMetadata() {
 }
 
 export default function MusicVideos() {
+  // Get all music video posts
+  const allPosts = getPosts(["src", "app", "work", "music-videos"]);
+  
   return (
-    <Column maxWidth="m">
+    <Column maxWidth="xl">
       <Schema
         as="webPage"
         baseURL={baseURL}
         path="/work/music-videos"
         title="Music Videos"
-        description="Our official music videos."
+        description="Παρακολουθήστε τα τελευταία μουσικά μας βίντεο από το YouTube."
         image={`/api/og/generate?title=${encodeURIComponent("Music Videos")}`}
         author={{
           name: person.name,
@@ -31,7 +35,7 @@ export default function MusicVideos() {
       <Button href="/work" variant="primary" size="m" style={{ marginBottom: '20px' }}>
         Πίσω στα Projects
       </Button>
-      <Projects postDirectory={["src", "app", "work", "music-videos"]} baseHref="work/music-videos" />
+      <MusicVideosGallery initialPosts={allPosts} />
     </Column>
   );
 } 
