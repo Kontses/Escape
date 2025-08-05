@@ -30,7 +30,7 @@ export default function Post({ post, thumbnail, direction }: PostProps) {
                     position="relative"
                     fillWidth gap="12"
                     padding="24"
-                    vertical="top">
+                    vertical="start">
                     <Column gap="4">
                         <Heading
                             as="h2"
