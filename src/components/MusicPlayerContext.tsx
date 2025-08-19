@@ -44,13 +44,34 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(1);
 
+  // Helper function to convert local paths to LFS API paths
+  const convertToLfsUrl = (src: string): string => {
+    if (src.startsWith('/Music/')) {
+      // Remove the leading slash and convert to API path
+      const pathWithoutSlash = src.substring(1);
+      return `/api/lfs-audio/${pathWithoutSlash}`;
+    }
+    return src;
+  };
+
   const playTrack = useCallback((track: Track, tracks?: Track[]) => {
-    setCurrentTrack(track);
+    // Convert the track src to LFS URL if needed
+    const convertedTrack = {
+      ...track,
+      src: track.src ? convertToLfsUrl(track.src) : track.src
+    };
+
+    setCurrentTrack(convertedTrack);
     if (tracks) {
-      setCurrentTrackList(tracks);
+      // Convert all track URLs in the list
+      const convertedTracks = tracks.map(t => ({
+        ...t,
+        src: t.src ? convertToLfsUrl(t.src) : t.src
+      }));
+      setCurrentTrackList(convertedTracks);
     }
     setIsPlaying(true);
-  }, []);
+  }, [convertToLfsUrl]);
 
   const togglePlayPause = useCallback(() => {
     setIsPlaying((prev) => !prev);

@@ -24,9 +24,17 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
     if (src && !currentTrack) {
       const filename = src.split('/').pop()?.replace('.mp3', '') || 'Unknown Track';
 
+      // Convert local paths to API paths for Git LFS files
+      let audioSrc = src;
+      if (src.startsWith('/Music/')) {
+        // Remove the leading slash and convert to API path
+        const pathWithoutSlash = src.substring(1); // Remove leading /
+        audioSrc = `/api/lfs-audio/${pathWithoutSlash}`;
+      }
+
       const track = {
         title: filename.replace(/[-_]/g, ' '),
-        src: src
+        src: audioSrc
       };
       playTrack(track);
     }
