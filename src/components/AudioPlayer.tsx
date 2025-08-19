@@ -98,20 +98,14 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
             height: '40px',
             borderRadius: '4px',
             overflow: 'hidden',
-            backgroundColor: '#1db954',
+            backgroundColor: '#333',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <Icon name="music" size="s" style={{ color: '#fff', zIndex: 1 }} />
+            <Icon name="music" size="s" style={{ color: '#666' }} />
             <Image
-              src={(() => {
-                // Extract the album folder path and use cover.png
-                const srcPath = currentTrack.src || '';
-                const pathParts = srcPath.split('/');
-                const albumFolder = pathParts.slice(0, -1).join('/'); // Remove filename
-                return `${albumFolder}/cover.png`;
-              })()}
+              src={currentTrack.src?.replace(/\/[^/]+\.(wav|mp3|m4a)$/, '/cover.png') || ''}
               alt={currentTrack.title || "Track Cover"}
               width={40}
               height={40}
@@ -121,7 +115,7 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
                 left: 0,
                 borderRadius: '4px',
                 objectFit: 'cover',
-                zIndex: 2
+                zIndex: 1
               }}
               onError={(e) => {
                 // Hide the image on error, showing the music icon behind
@@ -178,13 +172,13 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
           onClick={toggleMute}
           size="s"
           style={{
-            background: isMuted ? 'rgba(255, 107, 107, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-            border: `1px solid ${isMuted ? '#ff6b6b' : 'rgba(255, 255, 255, 0.3)'}`,
-            padding: '6px',
+            background: isMuted ? 'rgba(255, 107, 107, 0.3)' : 'rgba(255, 255, 255, 0.2)',
+            border: `2px solid ${isMuted ? '#ff6b6b' : 'rgba(255, 255, 255, 0.5)'}`,
+            padding: '8px',
             minWidth: 'auto',
             color: isMuted ? '#ff6b6b' : '#fff',
             cursor: 'pointer',
-            borderRadius: '4px',
+            borderRadius: '6px',
             transition: 'all 0.2s ease'
           }}
           title={isMuted ? 'Unmute' : 'Mute'}
