@@ -22,14 +22,14 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
   // If src prop is provided, create a track and play it
   useEffect(() => {
     if (src && !currentTrack) {
-      const filename = src.split('/').pop()?.replace('.mp3', '') || 'Unknown Track';
+      const filename = src.split('/').pop()?.replace(/\.(mp3|wav|m4a)$/, '') || 'Unknown Track';
 
-      // Convert local paths to API paths for Git LFS files
+      // Convert local paths to direct GitHub LFS URLs
       let audioSrc = src;
       if (src.startsWith('/Music/')) {
-        // Remove the leading slash and convert to API path
+        // Remove the leading slash and convert to GitHub LFS URL
         const pathWithoutSlash = src.substring(1); // Remove leading /
-        audioSrc = `/api/lfs-audio/${pathWithoutSlash}`;
+        audioSrc = `https://media.githubusercontent.com/media/Kontses/Escape/main/public/${pathWithoutSlash}`;
       }
 
       const track = {
