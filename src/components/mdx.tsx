@@ -1,7 +1,7 @@
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
 import React, { ReactNode } from "react";
 
-import { 
+import {
   Heading,
   HeadingLink,
   Text,
@@ -22,6 +22,8 @@ import {
   Media,
   SmartLink,
 } from "@once-ui-system/core";
+
+import { AudioPlayer } from "@/components/AudioPlayer";
 
 type CustomLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
@@ -179,6 +181,7 @@ const components = {
   Icon,
   Media,
   SmartLink,
+  AudioPlayer,
 };
 
 type CustomMDXProps = MDXRemoteProps & {
