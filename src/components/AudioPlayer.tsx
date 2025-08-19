@@ -92,34 +92,43 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
     <Flex horizontal="space-between" vertical="center" gap="l" fillWidth>
       <Flex horizontal="start" vertical="center" gap="s" style={{ minWidth: '200px' }}>
         {currentTrack.src && (
-          <div style={{ position: 'relative', width: '40px', height: '40px', borderRadius: '4px', overflow: 'hidden', backgroundColor: '#333' }}>
+          <div style={{
+            position: 'relative',
+            width: '40px',
+            height: '40px',
+            borderRadius: '4px',
+            overflow: 'hidden',
+            backgroundColor: '#1db954',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Icon name="music" size="s" style={{ color: '#fff', zIndex: 1 }} />
             <Image
-              src={currentTrack.src.replace(/\.(wav|mp3|m4a)$/, ".jpg")}
+              src={(() => {
+                // Extract the album folder path and use cover.png
+                const srcPath = currentTrack.src || '';
+                const pathParts = srcPath.split('/');
+                const albumFolder = pathParts.slice(0, -1).join('/'); // Remove filename
+                return `${albumFolder}/cover.png`;
+              })()}
               alt={currentTrack.title || "Track Cover"}
               width={40}
               height={40}
-              style={{ borderRadius: '4px', objectFit: 'cover' }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                borderRadius: '4px',
+                objectFit: 'cover',
+                zIndex: 2
+              }}
               onError={(e) => {
-                // Fallback to a default music icon or solid color
+                // Hide the image on error, showing the music icon behind
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
               }}
             />
-            {/* Fallback icon when image fails to load */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#444',
-              color: '#888'
-            }}>
-              <Icon name="music" size="s" />
-            </div>
           </div>
         )}
         <Column>
@@ -169,12 +178,14 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
           onClick={toggleMute}
           size="s"
           style={{
-            background: 'transparent',
-            border: 'none',
-            padding: '4px',
+            background: isMuted ? 'rgba(255, 107, 107, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+            border: `1px solid ${isMuted ? '#ff6b6b' : 'rgba(255, 255, 255, 0.3)'}`,
+            padding: '6px',
             minWidth: 'auto',
             color: isMuted ? '#ff6b6b' : '#fff',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            borderRadius: '4px',
+            transition: 'all 0.2s ease'
           }}
           title={isMuted ? 'Unmute' : 'Mute'}
         >
