@@ -5,12 +5,6 @@ import { Flex, Text, Button, Icon, Column } from '@once-ui-system/core';
 import { useMusicPlayer } from '@/components/MusicPlayerContext';
 import Image from 'next/image';
 
-interface Track {
-  title: string;
-  duration?: string;
-  src?: string;
-}
-
 interface AudioPlayerProps {
   readonly src?: string;
 }
@@ -105,7 +99,21 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
           }}>
             <Icon name="music" size="s" style={{ color: '#666' }} />
             <Image
-              src={currentTrack.src?.replace(/\/[^/]+\.(wav|mp3|m4a)$/, '/cover.png') || ''}
+              src={(() => {
+                // Get the cover image path
+                const srcPath = currentTrack.src || '';
+                if (srcPath.includes('github.com')) {
+                  // If it's a GitHub URL, convert to local path for cover
+                  const pathMatch = /\/public\/(.+)\/[^/]+\.(wav|mp3|m4a)$/.exec(srcPath);
+                  if (pathMatch) {
+                    return `/${pathMatch[1]}/cover.png`;
+                  }
+                } else {
+                  // If it's a local path, replace filename with cover.png
+                  return srcPath.replace(/\/[^/]+\.(wav|mp3|m4a)$/, '/cover.png');
+                }
+                return '';
+              })()}
               alt={currentTrack.title || "Track Cover"}
               width={40}
               height={40}

@@ -12,6 +12,7 @@ import {
   HiOutlineDocument,
   HiOutlineGlobeAsiaAustralia,
   HiOutlineRocketLaunch,
+  HiMusicalNote,
 } from "react-icons/hi2";
 
 import {
@@ -22,7 +23,7 @@ import {
   PiImageDuotone,
 } from "react-icons/pi";
 
-import { FaDiscord, FaGithub, FaLinkedin, FaX, FaInstagram, FaPlay, FaPause, FaForward, FaBackward } from "react-icons/fa6";
+import { FaDiscord, FaGithub, FaLinkedin, FaX, FaInstagram, FaPlay, FaPause, FaForward, FaBackward, FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from "react-icons/fa6";
 
 export const iconLibrary: Record<string, IconType> = {
   arrowUpRight: HiArrowUpRight,
@@ -49,7 +50,11 @@ export const iconLibrary: Record<string, IconType> = {
   play: FaPlay,
   pause: FaPause,
   forward: FaForward,
-  backward: FaBackward
+  backward: FaBackward,
+  music: HiMusicalNote,
+  volumeUp: FaVolumeHigh,
+  volumeDown: FaVolumeLow,
+  volumeOff: FaVolumeXmark
 };
 
 export type IconLibrary = typeof iconLibrary;
