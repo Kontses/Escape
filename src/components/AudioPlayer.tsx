@@ -56,12 +56,21 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlayPause();
+      } else if (e.ctrlKey && e.code === 'KeyM') {
+        e.preventDefault();
+        toggleMute();
+      } else if (e.ctrlKey && e.code === 'Comma') { // Ctrl + < (comma key)
+        e.preventDefault();
+        playPrevious();
+      } else if (e.ctrlKey && e.code === 'Period') { // Ctrl + > (period key)
+        e.preventDefault();
+        playNext();
       }
     };
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [togglePlayPause]);
+  }, [togglePlayPause, toggleMute, playPrevious, playNext]);
 
   // Set volume on mount and when volume changes
   useEffect(() => {
@@ -140,14 +149,57 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
       </Flex>
 
       <Flex direction="column" flex={1} horizontal="center" gap="xs">
-        <Flex horizontal="center" gap="m">
-          <Button onClick={playPrevious} size="s" style={{ background: 'transparent', border: 'none', padding: '0', minWidth: 'auto', color: '#fff' }}>
+        <Flex horizontal="center" vertical="center" gap="m">
+          <Button
+            onClick={playPrevious}
+            size="s"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: '0',
+              minWidth: 'auto',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            title="Previous (Ctrl + <)"
+          >
             <Icon name="backward" size="m" />
           </Button>
-          <Button onClick={togglePlayPause} size="l" style={{ background: 'transparent', border: 'none', padding: '0', minWidth: 'auto', color: '#fff', transform: 'scale(1.2)' }}>
+          <Button
+            onClick={togglePlayPause}
+            size="l"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: '0',
+              minWidth: 'auto',
+              color: '#fff',
+              transform: 'scale(1.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            title="Play/Pause (Space)"
+          >
             <Icon name={isPlaying ? "pause" : "play"} size="xl" />
           </Button>
-          <Button onClick={playNext} size="s" style={{ background: 'transparent', border: 'none', padding: '0', minWidth: 'auto', color: '#fff' }}>
+          <Button
+            onClick={playNext}
+            size="s"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: '0',
+              minWidth: 'auto',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            title="Next (Ctrl + >)"
+          >
             <Icon name="forward" size="m" />
           </Button>
         </Flex>
@@ -189,7 +241,7 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
             borderRadius: '6px',
             transition: 'all 0.2s ease'
           }}
-          title={isMuted ? 'Unmute' : 'Mute'}
+          title={isMuted ? 'Unmute (Ctrl + M)' : 'Mute (Ctrl + M)'}
         >
           <Icon name={getVolumeIcon()} size="s" />
         </Button>
