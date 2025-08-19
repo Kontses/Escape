@@ -8,55 +8,47 @@ export async function GET(
     const resolvedParams = await params;
     const filePath = resolvedParams.path.join('/');
 
-    // Construct the GitHub LFS URL
-    const githubLfsUrl = `https://github.com/Kontses/Escape/raw/main/public/Music/${filePath}`;
+    // Try multiple URL formats for GitHub LFS
+    const urls = [
+      `https://media.githubusercontent.com/media/Kontses/Escape/main/public/Music/${filePath}`,
+      `https://github.com/Kontses/Escape/raw/main/public/Music/${filePath}`,
+    ];
 
-    console.log('Fetching LFS file:', githubLfsUrl);
-    console.log('Original path:', filePath);
+    console.log('Fetching LFS file for path:', filePath);
 
-    // Fetch the file from GitHub LFS
-    const response = await fetch(githubLfsUrl, {
-      headers: {
-        'Accept': 'audio/*',
-        'User-Agent': 'Mozilla/5.0 (compatible; Vercel)',
-      },
-    });
+    let response: Response | null = null;
+    let workingUrl = '';
 
-    console.log('GitHub response status:', response.status);
-    console.log('GitHub response headers:', Object.fromEntries(response.headers.entries()));
+    for (const url of urls) {
+      console.log('Trying URL:', url);
 
-    if (!response.ok) {
-      console.error('Failed to fetch LFS file:', response.status, response.statusText);
+      try {
+        const testResponse = await fetch(url, {
+          headers: {
+            'Accept': 'audio/*',
+            'User-Agent': 'Mozilla/5.0 (compatible; Vercel)',
+          },
+        });
 
-      // Try alternative URL format
-      const alternativeUrl = `https://media.githubusercontent.com/media/Kontses/Escape/main/public/Music/${filePath}`;
-      console.log('Trying alternative URL:', alternativeUrl);
+        console.log(`Response status for ${url}:`, testResponse.status);
 
-      const altResponse = await fetch(alternativeUrl, {
-        headers: {
-          'Accept': 'audio/*',
-          'User-Agent': 'Mozilla/5.0 (compatible; Vercel)',
-        },
-      });
-
-      if (!altResponse.ok) {
-        console.error('Alternative URL also failed:', altResponse.status, altResponse.statusText);
-        return new NextResponse(`File not found. Tried: ${githubLfsUrl} and ${alternativeUrl}`, { status: 404 });
+        if (testResponse.ok) {
+          response = testResponse;
+          workingUrl = url;
+          break;
+        }
+      } catch (error) {
+        console.error(`Error fetching ${url}:`, error);
+        continue;
       }
-
-      // Use alternative response
-      const arrayBuffer = await altResponse.arrayBuffer();
-      const contentType = altResponse.headers.get('content-type') || 'audio/mpeg';
-
-      return new NextResponse(arrayBuffer, {
-        status: 200,
-        headers: {
-          'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
-          'Accept-Ranges': 'bytes',
-        },
-      });
     }
+
+    if (!response || !response.ok) {
+      console.error('All URLs failed');
+      return new NextResponse(`File not found. Tried URLs: ${urls.join(', ')}`, { status: 404 });
+    }
+
+    console.log('Successfully fetched from:', workingUrl);
     
     // Get the content type from the original response
     const contentType = response.headers.get('content-type') || 'audio/mpeg';
