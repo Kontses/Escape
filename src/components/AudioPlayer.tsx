@@ -16,7 +16,7 @@ interface AudioPlayerProps {
 }
 
 export function AudioPlayer({ src }: AudioPlayerProps) {
-  const { currentTrack, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume, playTrack } = useMusicPlayer();
+  const { currentTrack, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume, playTrack, isMuted, toggleMute, seek } = useMusicPlayer();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // If src prop is provided, create a track and play it
@@ -41,9 +41,8 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
   }, [src, currentTrack, playTrack]);
   
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = parseFloat(e.target.value);
-    }
+    const time = parseFloat(e.target.value);
+    seek(time);
   };
 
   const formatTime = (time: number) => {
@@ -52,11 +51,28 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  // Add audioRef to the main audio tag in MusicPlayerContext.tsx
-  // Also, set the volume on mount and when volume changes
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Only trigger if not typing in an input field
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlayPause();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [togglePlayPause]);
+
+  // Set volume on mount and when volume changes
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volume; // Set initial volume
+      audioRef.current.volume = volume;
     }
   }, [volume]);
 
@@ -64,17 +80,47 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
     return null; // Don't render if no track is selected
   }
 
+  // Determine volume icon
+  const getVolumeIcon = () => {
+    if (isMuted) return "volumeOff";
+    if (volume > 0.5) return "volumeUp";
+    if (volume > 0) return "volumeDown";
+    return "volumeOff";
+  };
+
   return (
     <Flex horizontal="space-between" vertical="center" gap="l" fillWidth>
       <Flex horizontal="start" vertical="center" gap="s" style={{ minWidth: '200px' }}>
         {currentTrack.src && (
-          <Image
-            src={currentTrack.src.replace(".wav", ".jpg")}
-            alt={currentTrack.title || "Track Cover"}
-            width={40}
-            height={40}
-            style={{ borderRadius: '4px' }}
-          />
+          <div style={{ position: 'relative', width: '40px', height: '40px', borderRadius: '4px', overflow: 'hidden', backgroundColor: '#333' }}>
+            <Image
+              src={currentTrack.src.replace(/\.(wav|mp3|m4a)$/, ".jpg")}
+              alt={currentTrack.title || "Track Cover"}
+              width={40}
+              height={40}
+              style={{ borderRadius: '4px', objectFit: 'cover' }}
+              onError={(e) => {
+                // Fallback to a default music icon or solid color
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
+            />
+            {/* Fallback icon when image fails to load */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#444',
+              color: '#888'
+            }}>
+              <Icon name="music" size="s" />
+            </div>
+          </div>
         )}
         <Column>
           <Text style={{ color: '#fff', fontSize: '0.9em' }}>{currentTrack?.title}</Text>
@@ -103,11 +149,11 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
             onChange={handleSeek}
             style={{
               flex: 1,
-              height: '5px',
-              background: '#555',
-              borderRadius: '5px',
+              height: '6px',
+              background: `linear-gradient(to right, #1db954 0%, #1db954 ${(currentTime / duration) * 100}%, #555 ${(currentTime / duration) * 100}%, #555 100%)`,
+              borderRadius: '3px',
               outline: 'none',
-              opacity: '0.7',
+              opacity: '0.8',
               transition: 'opacity .2s',
               WebkitAppearance: 'none',
               appearance: 'none',
@@ -118,21 +164,38 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
         </Flex>
       </Flex>
 
-      <Flex horizontal="end" vertical="center" gap="s" style={{ minWidth: '100px' }}>
-        <Text style={{ color: '#ccc', fontSize: '0.8em' }}>Volume</Text>
+      <Flex horizontal="end" vertical="center" gap="s" style={{ minWidth: '120px' }}>
+        <Button
+          onClick={toggleMute}
+          size="s"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            padding: '4px',
+            minWidth: 'auto',
+            color: isMuted ? '#ff6b6b' : '#fff',
+            cursor: 'pointer'
+          }}
+          title={isMuted ? 'Unmute' : 'Mute'}
+        >
+          <Icon name={getVolumeIcon()} size="s" />
+        </Button>
         <input
           type="range"
-          value={volume * 100}
-          onChange={(e) => setVolume(parseFloat(e.target.value) / 100)}
+          value={isMuted ? 0 : volume * 100}
+          onChange={(e) => {
+            const newVolume = parseFloat(e.target.value) / 100;
+            setVolume(newVolume);
+          }}
           max={100}
           min={0}
           style={{
             width: '80px',
-            height: '5px',
-            background: '#555',
-            borderRadius: '5px',
+            height: '4px',
+            background: `linear-gradient(to right, #1db954 0%, #1db954 ${isMuted ? 0 : volume * 100}%, #555 ${isMuted ? 0 : volume * 100}%, #555 100%)`,
+            borderRadius: '2px',
             outline: 'none',
-            opacity: '0.7',
+            opacity: '0.8',
             transition: 'opacity .2s',
             WebkitAppearance: 'none',
             appearance: 'none',

@@ -16,8 +16,6 @@ export default function GalleryModal({
   imageAlt,
   onClose,
 }: GalleryModalProps) {
-  console.log("GalleryModal rendered. isOpen:", isOpen, "imageSrc:", imageSrc);
-  
   const modalClass = `${styles.modalOverlay} ${isOpen ? styles.isOpen : ''}`;
 
   if (!isOpen && !imageSrc) { // Προσθήκη ελέγχου imageSrc για να μην κλείνει πριν το transition

@@ -19,6 +19,9 @@ interface MusicPlayerContextType {
   duration: number;
   setVolume: (volume: number) => void;
   volume: number;
+  isMuted: boolean;
+  toggleMute: () => void;
+  seek: (time: number) => void;
 }
 
 const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined);
@@ -43,6 +46,8 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [previousVolume, setPreviousVolume] = useState(1);
 
   // Helper function to convert local paths to GitHub raw URLs
   const convertToLfsUrl = (src: string): string => {
@@ -104,6 +109,29 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
       audioRef.current.volume = newVolume;
     }
     setVolumeState(newVolume);
+    if (newVolume > 0) {
+      setIsMuted(false);
+    }
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    if (isMuted) {
+      // Unmute: restore previous volume
+      setVolume(previousVolume);
+      setIsMuted(false);
+    } else {
+      // Mute: save current volume and set to 0
+      setPreviousVolume(volume);
+      setVolume(0);
+      setIsMuted(true);
+    }
+  }, [isMuted, volume, previousVolume, setVolume]);
+
+  const seek = useCallback((time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
   }, []);
 
   useEffect(() => {
@@ -158,8 +186,11 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     currentTime,
     duration,
     setVolume,
-    volume
-  }), [currentTrack, isPlaying, playTrack, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume]);
+    volume,
+    isMuted,
+    toggleMute,
+    seek
+  }), [currentTrack, isPlaying, playTrack, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume, isMuted, toggleMute, seek]);
 
   return (
     <MusicPlayerContext.Provider value={value}>

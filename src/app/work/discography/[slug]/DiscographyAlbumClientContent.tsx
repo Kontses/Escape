@@ -33,7 +33,6 @@ export function DiscographyAlbumClientContent({
 }: Readonly<DiscographyAlbumClientContentProps>) {
   const { playTrack } = useMusicPlayer();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log('Artist:', artist);
 
   const handlePlayAlbum = () => {
     if (tracks && tracks.length > 0) {
