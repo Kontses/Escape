@@ -44,12 +44,12 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(1);
 
-  // Helper function to convert local paths to proxy API paths
+  // Helper function to convert local paths to GitHub raw URLs
   const convertToLfsUrl = (src: string): string => {
     if (src.startsWith('/Music/')) {
-      // Remove the leading slash and convert to proxy API path
+      // Remove the leading slash and convert to GitHub raw URL
       const pathWithoutSlash = src.substring(1);
-      return `/api/lfs-proxy/${pathWithoutSlash}`;
+      return `https://github.com/Kontses/Escape/raw/main/public/${pathWithoutSlash}`;
     }
     return src;
   };

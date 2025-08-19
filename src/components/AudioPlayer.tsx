@@ -24,12 +24,12 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
     if (src && !currentTrack) {
       const filename = src.split('/').pop()?.replace(/\.(mp3|wav|m4a)$/, '') || 'Unknown Track';
 
-      // Convert local paths to proxy API paths
+      // Convert local paths to GitHub raw URLs
       let audioSrc = src;
       if (src.startsWith('/Music/')) {
-        // Remove the leading slash and convert to proxy API path
+        // Remove the leading slash and convert to GitHub raw URL
         const pathWithoutSlash = src.substring(1); // Remove leading /
-        audioSrc = `/api/lfs-proxy/${pathWithoutSlash}`;
+        audioSrc = `https://github.com/Kontses/Escape/raw/main/public/${pathWithoutSlash}`;
       }
 
       const track = {
