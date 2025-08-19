@@ -12,12 +12,25 @@ interface Track {
 }
 
 interface AudioPlayerProps {
-  tracks: Track[];
+  readonly src?: string;
 }
 
-export function AudioPlayer() {
-  const { currentTrack, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume } = useMusicPlayer();
+export function AudioPlayer({ src }: AudioPlayerProps) {
+  const { currentTrack, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume, playTrack } = useMusicPlayer();
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // If src prop is provided, create a track and play it
+  useEffect(() => {
+    if (src && !currentTrack) {
+      const filename = src.split('/').pop()?.replace('.mp3', '') || 'Unknown Track';
+
+      const track = {
+        title: filename.replace(/[-_]/g, ' '),
+        src: src
+      };
+      playTrack(track);
+    }
+  }, [src, currentTrack, playTrack]);
   
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (audioRef.current) {
@@ -39,7 +52,7 @@ export function AudioPlayer() {
     }
   }, [volume]);
 
-  if (!currentTrack || !currentTrack.src) {
+  if (!currentTrack?.src) {
     return null; // Don't render if no track is selected
   }
 
