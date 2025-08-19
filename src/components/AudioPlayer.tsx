@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { Flex, Text, Button, Icon, Column } from '@once-ui-system/core';
 import { useMusicPlayer } from '@/components/MusicPlayerContext';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface AudioPlayerProps {
   readonly src?: string;
@@ -43,6 +44,36 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  // Function to get album slug from track src
+  const getAlbumSlug = (trackSrc: string): string | null => {
+    // Extract album folder from path like "/Music/Discography/Ανθυγιεινή-μουσική/1 Intro.wav"
+    // or from GitHub URL like "https://github.com/Kontses/Escape/raw/main/public/Music/Discography/Ανθυγιεινή-μουσική/1 Intro.wav"
+
+    let albumFolder = '';
+
+    if (trackSrc.includes('github.com')) {
+      // Extract from GitHub URL
+      const pathMatch = /\/public\/Music\/Discography\/([^/]+)\//.exec(trackSrc);
+      if (pathMatch) {
+        albumFolder = pathMatch[1];
+      }
+    } else {
+      // Extract from local path
+      const pathMatch = /\/Music\/Discography\/([^/]+)\//.exec(trackSrc);
+      if (pathMatch) {
+        albumFolder = pathMatch[1];
+      }
+    }
+
+    // Map album folder to slug
+    // For now, we'll use a simple mapping. In the future, this could be dynamic
+    const albumMapping: Record<string, string> = {
+      'Ανθυγιεινή-μουσική': 'demo-album'
+    };
+
+    return albumMapping[albumFolder] || null;
   };
 
   // Keyboard shortcuts
@@ -143,7 +174,40 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
           </div>
         )}
         <Column>
-          <Text style={{ color: '#fff', fontSize: '0.9em' }}>{currentTrack?.title}</Text>
+          {(() => {
+            const albumSlug = currentTrack?.src ? getAlbumSlug(currentTrack.src) : null;
+
+            if (albumSlug) {
+              return (
+                <Link
+                  href={`/work/discography/${albumSlug}`}
+                  style={{
+                    color: '#fff',
+                    fontSize: '0.9em',
+                    textDecoration: 'none',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#1db954';
+                    e.currentTarget.style.textDecoration = 'underline';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.textDecoration = 'none';
+                  }}
+                  title="Go to album page"
+                >
+                  {currentTrack?.title}
+                </Link>
+              );
+            } else {
+              return (
+                <Text style={{ color: '#fff', fontSize: '0.9em' }}>
+                  {currentTrack?.title}
+                </Text>
+              );
+            }
+          })()}
           {currentTrack?.duration && <Text style={{ color: '#ccc', fontSize: '0.8em' }}>{currentTrack?.duration}</Text>}
         </Column>
       </Flex>
