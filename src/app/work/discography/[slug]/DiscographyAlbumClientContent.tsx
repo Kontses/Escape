@@ -41,25 +41,50 @@ export function DiscographyAlbumClientContent({
   };
 
   const handleDownload = async () => {
-    const response = await fetch('/api/download-album', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tracks, images, title }),
-    });
+    try {
+      console.log('Starting download for:', { title, tracks: tracks?.length, images: images?.length });
 
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${title}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } else {
-      alert('Failed to download album');
+      const response = await fetch('/api/download-album', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify({ tracks, images, title }),
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${title}-info.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        console.log('Download completed successfully');
+      } else {
+        const errorText = await response.text();
+        console.error('Download failed:', response.status, errorText);
+
+        let errorMessage = 'Αποτυχία κατεβάσματος άλμπουμ';
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.details) {
+            errorMessage += `: ${errorData.details}`;
+          }
+        } catch {
+          // If not JSON, use the raw error text
+          if (errorText) {
+            errorMessage += `: ${errorText}`;
+          }
+        }
+
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Σφάλμα κατά το κατέβασμα του άλμπουμ. Παρακαλώ δοκιμάστε ξανά.');
     }
   };
 
