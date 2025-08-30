@@ -33,6 +33,8 @@ export function DiscographyAlbumClientContent({
 }: Readonly<DiscographyAlbumClientContentProps>) {
   const { playTrack } = useMusicPlayer();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState('');
 
   const handlePlayAlbum = () => {
     if (tracks && tracks.length > 0) {
@@ -41,9 +43,14 @@ export function DiscographyAlbumClientContent({
   };
 
   const handleDownload = async () => {
+    if (isDownloading) return; // Prevent multiple downloads
+
     try {
+      setIsDownloading(true);
+      setDownloadProgress('Προετοιμασία κατεβάσματος...');
       console.log('Starting download for:', { title, tracks: tracks?.length, images: images?.length });
 
+      setDownloadProgress('Κατέβασμα αρχείων από τον διακομιστή...');
       const response = await fetch('/api/download-album', {
         method: 'POST',
         headers: {
@@ -53,16 +60,27 @@ export function DiscographyAlbumClientContent({
       });
 
       if (response.ok) {
+        setDownloadProgress('Δημιουργία αρχείου zip...');
         const blob = await response.blob();
+
+        setDownloadProgress('Ξεκινάει το κατέβασμα...');
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${title}-info.zip`;
+        a.download = `${title}.zip`;
         document.body.appendChild(a);
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
+
+        setDownloadProgress('Κατέβασμα ολοκληρώθηκε!');
         console.log('Download completed successfully');
+
+        // Clear success message after 2 seconds
+        setTimeout(() => {
+          setDownloadProgress('');
+          setIsDownloading(false);
+        }, 2000);
       } else {
         const errorText = await response.text();
         console.error('Download failed:', response.status, errorText);
@@ -81,10 +99,14 @@ export function DiscographyAlbumClientContent({
         }
 
         alert(errorMessage);
+        setIsDownloading(false);
+        setDownloadProgress('');
       }
     } catch (error) {
       console.error('Download error:', error);
       alert('Σφάλμα κατά το κατέβασμα του άλμπουμ. Παρακαλώ δοκιμάστε ξανά.');
+      setIsDownloading(false);
+      setDownloadProgress('');
     }
   };
 
@@ -108,10 +130,27 @@ export function DiscographyAlbumClientContent({
           {summary && <Text>{summary}</Text>}
 
           {tracks && tracks.length > 0 && (
-            <Flex gap="s" style={{ marginTop: '20px', marginBottom: '20px' }}>
-              <Button onClick={handlePlayAlbum}>Play Album</Button>
-              <Button onClick={handleDownload} variant="secondary">Download</Button>
-            </Flex>
+            <Column gap="s" style={{ marginTop: '20px', marginBottom: '20px' }}>
+              <Flex gap="s">
+                <Button onClick={handlePlayAlbum}>Play Album</Button>
+                <Button
+                  onClick={handleDownload}
+                  variant="secondary"
+                  disabled={isDownloading}
+                >
+                  {isDownloading ? 'Κατεβαίνει...' : 'Download'}
+                </Button>
+              </Flex>
+              {downloadProgress && (
+                <Text variant="body-default-s" style={{
+                  color: 'var(--brand-accent)',
+                  fontStyle: 'italic',
+                  marginTop: '8px'
+                }}>
+                  {downloadProgress}
+                </Text>
+              )}
+            </Column>
           )}
 
           {tracks && tracks.length > 0 && (
