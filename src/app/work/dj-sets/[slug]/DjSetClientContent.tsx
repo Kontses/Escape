@@ -7,7 +7,6 @@ import { useMusicPlayer } from '@/components/MusicPlayerContext';
 import styles from '../../discography/[slug]/DiscographyAlbumClientContent.module.scss';
 import GalleryModal from '@/components/gallery/GalleryModal';
 import { formatDate } from '@/utils/formatDate';
-import { AudioPlayer } from '@/components';
 
 interface DjSetClientContentProps {
   title: string;
@@ -24,7 +23,25 @@ export function DjSetClientContent({
   publishedAt,
   audio,
 }: Readonly<DjSetClientContentProps>) {
+  const { playTrack } = useMusicPlayer();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handlePlaySet = () => {
+    if (audio) {
+      // Convert local paths to GitHub raw URLs if needed
+      let audioSrc = audio;
+      if (audio.startsWith('/Music/')) {
+        const pathWithoutSlash = audio.substring(1);
+        audioSrc = `https://github.com/Kontses/Escape/raw/main/public/${pathWithoutSlash}`;
+      }
+
+      const track = {
+        title: title,
+        src: audioSrc
+      };
+      playTrack(track);
+    }
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -45,9 +62,34 @@ export function DjSetClientContent({
           {summary && <Text>{summary}</Text>}
 
           {audio && (
-            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-              <AudioPlayer src={audio} />
-            </div>
+            <Column gap="s" style={{ marginTop: '20px', marginBottom: '20px' }}>
+              <Button onClick={handlePlaySet}>Play Set</Button>
+            </Column>
+          )}
+
+          {audio && (
+            <Column gap="xs">
+              <Heading as="h2" variant="heading-strong-xl">Τραγούδι</Heading>
+              <Flex
+                vertical="center"
+                horizontal="space-between"
+                gap="s"
+                onClick={handlePlaySet}
+                className={styles.trackItem}
+                style={{
+                  cursor: 'pointer',
+                  padding: 'var(--spacing-s)',
+                  borderRadius: '8px',
+                  border: '1px solid transparent',
+                  transition: 'background-color 0.2s ease-in-out, border-color 0.2s ease-in-out',
+                }}
+              >
+                <Flex vertical="center" gap="s">
+                  <Text>1.</Text>
+                  <Text>{title}</Text>
+                </Flex>
+              </Flex>
+            </Column>
           )}
         </Column>
 
