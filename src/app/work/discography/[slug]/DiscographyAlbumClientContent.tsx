@@ -43,68 +43,72 @@ export function DiscographyAlbumClientContent({
   };
 
   const handleDownload = async () => {
-    if (isDownloading) return; // Prevent multiple downloads
+    if (isDownloading) return;
 
     try {
       setIsDownloading(true);
-      setDownloadProgress('Προετοιμασία κατεβάσματος...');
-      console.log('Starting download for:', { title, tracks: tracks?.length, images: images?.length });
+      setDownloadProgress('Starting download...');
 
-      setDownloadProgress('Κατέβασμα αρχείων από τον διακομιστή...');
       const response = await fetch('/api/download-album', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ tracks, images, title }),
       });
 
-      if (response.ok) {
-        setDownloadProgress('Δημιουργία αρχείου zip...');
-        const blob = await response.blob();
+      if (!response.ok || !response.body) {
+        throw new Error(`Download failed: ${response.statusText}`);
+      }
 
-        setDownloadProgress('Ξεκινάει το κατέβασμα...');
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${title}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
+      const reader = response.body.getReader();
+      const chunks: Uint8Array[] = [];
+      const decoder = new TextDecoder();
 
-        setDownloadProgress('Κατέβασμα ολοκληρώθηκε!');
-        console.log('Download completed successfully');
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-        // Clear success message after 2 seconds
-        setTimeout(() => {
-          setDownloadProgress('');
-          setIsDownloading(false);
-        }, 2000);
-      } else {
-        const errorText = await response.text();
-        console.error('Download failed:', response.status, errorText);
+        const chunkStr = decoder.decode(value, { stream: true });
+        const lines = chunkStr.split('\n\n');
 
-        let errorMessage = 'Αποτυχία κατεβάσματος άλμπουμ';
-        try {
-          const errorData = JSON.parse(errorText);
-          if (errorData.details) {
-            errorMessage += `: ${errorData.details}`;
-          }
-        } catch {
-          // If not JSON, use the raw error text
-          if (errorText) {
-            errorMessage += `: ${errorText}`;
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.substring(6);
+            if (jsonStr) {
+              try {
+                const { progress } = JSON.parse(jsonStr);
+                setDownloadProgress(`Zipping files... ${progress}%`);
+              } catch (e) {
+                // Not a progress update, must be zip data
+                chunks.push(value);
+              }
+            }
+          } else if (value.length > 0) {
+            chunks.push(value);
           }
         }
-
-        alert(errorMessage);
-        setIsDownloading(false);
-        setDownloadProgress('');
       }
+
+      const blob = new Blob(chunks, { type: 'application/zip' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      setDownloadProgress('Download complete!');
+      setTimeout(() => {
+        setDownloadProgress('');
+        setIsDownloading(false);
+      }, 2000);
+
     } catch (error) {
       console.error('Download error:', error);
-      alert('Σφάλμα κατά το κατέβασμα του άλμπουμ. Παρακαλώ δοκιμάστε ξανά.');
+      alert('Error downloading album. Please try again.');
       setIsDownloading(false);
       setDownloadProgress('');
     }
