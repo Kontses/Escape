@@ -40,12 +40,14 @@ export default function Work() {
         title={musicVideos.label}
         postDirectory={["src", "app", "work", "music-videos"]}
         baseHref="/work/music-videos"
+        projectCardAspectRatio="1 / 1"
       />
 
       <WorkCarouselSection
         title={djSets.label}
         postDirectory={["src", "app", "work", "dj-sets"]}
         baseHref="/work/dj-sets"
+        projectCardAspectRatio="1 / 1"
       />
     </Column>
   );
