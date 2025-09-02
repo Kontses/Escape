@@ -38,7 +38,7 @@ export default function Blog() {
 				<Posts range={[2,3]} thumbnail/>
 				<Posts range={[4]} columns="2"/>
 			</Column>
-      {newsletter.display && <Mailchimp newsletter={newsletter} />}
+      {newsletter.display && <Buttondown newsletter={newsletter} />}
     </Column>
   );
 }
