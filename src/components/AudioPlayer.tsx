@@ -8,9 +8,11 @@ import Link from 'next/link';
 
 interface AudioPlayerProps {
   readonly src?: string;
+  readonly isMinimized?: boolean;
+  readonly toggleMinimize?: () => void;
 }
 
-export function AudioPlayer({ src }: AudioPlayerProps) {
+export function AudioPlayer({ src, isMinimized, toggleMinimize }: AudioPlayerProps) {
   const { currentTrack, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, duration, setVolume, volume, playTrack, isMuted, toggleMute, seek } = useMusicPlayer();
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -124,7 +126,7 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
 
   return (
     <Flex horizontal="space-between" vertical="center" gap="l" fillWidth>
-      <Flex horizontal="start" vertical="center" gap="s" style={{ minWidth: '200px' }}>
+      <Flex horizontal="start" vertical="center" gap="s" style={{ minWidth: '200px', opacity: isMinimized ? 0 : 1, transition: 'opacity 0.3s' }}>
         {currentTrack.src && (
           <div style={{
             position: 'relative',
@@ -212,7 +214,7 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
         </Column>
       </Flex>
 
-      <Flex direction="column" flex={1} horizontal="center" gap="xs">
+      <Flex direction="column" flex={1} horizontal="center" gap="xs" style={{ opacity: isMinimized ? 0 : 1, transition: 'opacity 0.3s' }}>
         <Flex horizontal="center" vertical="center" gap="m">
           <Button
             onClick={playPrevious}
@@ -291,7 +293,7 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
         </Flex>
       </Flex>
 
-      <Flex horizontal="end" vertical="center" gap="s" style={{ minWidth: '120px' }}>
+      <Flex horizontal="end" vertical="center" gap="s" style={{ minWidth: '120px', opacity: isMinimized ? 0 : 1, transition: 'opacity 0.3s' }}>
         <Button
           onClick={toggleMute}
           size="s"
@@ -332,6 +334,28 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
           }}
         />
       </Flex>
+      <Button
+        onClick={toggleMinimize}
+        size="s"
+        style={{
+          background: 'transparent',
+          border: 'none',
+          padding: '0',
+          minWidth: 'auto',
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'absolute',
+          top: isMinimized ? '-25px' : '10px',
+          right: '20px',
+          transform: isMinimized ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'all 0.3s ease-in-out',
+        }}
+        title={isMinimized ? 'Show Player' : 'Minimize Player'}
+      >
+        <Icon name="chevron-down" size="m" />
+      </Button>
     </Flex>
   );
 }
