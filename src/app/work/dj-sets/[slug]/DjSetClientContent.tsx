@@ -10,6 +10,7 @@ import { formatDate } from '@/utils/formatDate';
 
 interface DjSetClientContentProps {
   title: string;
+  artist?: string;
   summary?: string;
   images?: string[];
   publishedAt?: string;
@@ -18,6 +19,7 @@ interface DjSetClientContentProps {
 
 export function DjSetClientContent({
   title,
+  artist,
   summary,
   images,
   publishedAt,
@@ -25,6 +27,8 @@ export function DjSetClientContent({
 }: Readonly<DjSetClientContentProps>) {
   const { playTrack } = useMusicPlayer();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState('');
 
   const handlePlaySet = () => {
     if (audio) {
@@ -51,6 +55,43 @@ export function DjSetClientContent({
     setIsModalOpen(false);
   };
 
+  const handleDownload = async () => {
+    if (isDownloading) return;
+
+    try {
+      setIsDownloading(true);
+
+      const response = await fetch('/api/download-set', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ audio, title }),
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error(`Download failed: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      setIsDownloading(false);
+
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Error downloading set. Please try again.');
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <Column gap="l">
       <Flex horizontal="space-between" gap="l" vertical="start">
@@ -59,17 +100,26 @@ export function DjSetClientContent({
             <Heading as="h1" variant="heading-strong-xl">{title}</Heading>
             {publishedAt && <Text variant="body-default-s">{formatDate(publishedAt)}</Text>}
           </Flex>
+          {artist && <Heading as="h2" variant="heading-strong-m">{artist}</Heading>}
           {summary && <Text>{summary}</Text>}
 
           {audio && (
             <Column gap="s" style={{ marginTop: '20px', marginBottom: '20px' }}>
-              <Button onClick={handlePlaySet}>Play Set</Button>
+              <Flex gap="s">
+                <Button
+                  onClick={handleDownload}
+                  variant="secondary"
+                  disabled={isDownloading}
+                >
+                  {isDownloading ? 'Κατεβαίνει...' : 'Download'}
+                </Button>
+              </Flex>
             </Column>
           )}
 
           {audio && (
             <Column gap="xs">
-              <Heading as="h2" variant="heading-strong-xl">Τραγούδι</Heading>
+              <Heading as="h2" variant="heading-strong-xl">Sets</Heading>
               <Flex
                 vertical="center"
                 horizontal="space-between"

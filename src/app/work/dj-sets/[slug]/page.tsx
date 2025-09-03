@@ -41,7 +41,7 @@ export default async function DjSetPage({ params }: DjSetPageProps) {
     notFound();
   }
 
-  const { title, summary, images, audio, publishedAt } = post.metadata;
+  const { title, summary, images, audio, publishedAt, artist } = post.metadata;
 
   return (
     <Column maxWidth="m">
@@ -67,6 +67,7 @@ export default async function DjSetPage({ params }: DjSetPageProps) {
         images={images}
         audio={audio}
         publishedAt={publishedAt}
+        artist={artist}
       />
     </Column>
   );
