@@ -267,6 +267,11 @@ export const gallery = {
   // These are placeholder images, replace with your own
   images: [
     {
+      src: "/images/gallery/opening-toxie.jpg",
+      alt: "Studio Openong Party",
+      orientation: "vertical",
+    },
+    {
       src: "/images/gallery/studio-pre-opening.jpg",
       alt: "Escape Studio pre-opening",
       orientation: "vertical",
